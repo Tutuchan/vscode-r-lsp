@@ -44,6 +44,11 @@
           "type": "string",
           "default": "",
           "description": "R.exe path for Language Server"
+        },
+        "r.debug.lsp": {
+          "type": "string",
+          "default": "false",
+          "description": "Run the Language Server in debug mode"
         }
       }
     }

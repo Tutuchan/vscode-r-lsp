@@ -23,9 +23,9 @@ export function activate(context: ExtensionContext) {
 
 			server.listen(0, '127.0.0.1', () => {
 				let port = server.address().port
-				let runArgs = ["--quiet", "--slave", "-e", `languageserver::run(port=${port})`];
-				let debugArgs = ["--quiet", "--slave", "-e", `languageserver::run(debug=TRUE, port=${port})`];
-				// Once we have a port assigned spawn the Language Server with the port
+				let debugMode = getDebugMode()
+				let runArgs = ["--quiet", "--slave", "-e", `languageserver::run(debug=${debugMode}, port=${port})`];
+				// Once we have a port assigned spawn the Language Server with the port				
 				childProcess = cp.spawn(getRpath(), runArgs)
 				childProcess.stderr.on('data', (chunk: Buffer) => {
 					console.error(chunk + '');
@@ -60,6 +60,14 @@ export function activate(context: ExtensionContext) {
 
 export let config = workspace.getConfiguration("r");
 
+export function getDebugMode() {
+	let debug = config.get("debug.lsp") as string;
+	if (debug == "true") {
+		return "TRUE";
+	} else if (debug == "false") {
+		return "FALSE";
+	} else return('"' + debug + '"');
+}
 export function getRpath() {
 	let path = config.get("rpath.lsp") as string;
     if (path !== "") {
